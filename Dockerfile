@@ -4,23 +4,20 @@ FROM golang:1.21-alpine
 # Add Maintainer info
 LABEL maintainer="Mitra Surya"
 
-# Install git.
-# Git is required for fetching the dependencies.
-RUN apk update && apk add --no-cache git && apk add --no-cach bash && apk add build-base
+# Install git, bash, and build-base
+RUN apk update && apk add --no-cache git bash build-base
 
 # Setup folders
 RUN mkdir /app
 WORKDIR /app
 
-# Copy the source from the current directory to the working Directory inside the container
+# Copy the source from the current directory to the working directory inside the container
 COPY . .
 COPY .env .
 
-# Download all the dependencies
-RUN go get -d -v ./...
 
-# Install the package
-RUN go install -v ./...
+# Download all the dependencies
+RUN go download
 
 # Build the Go app
 RUN go build -o /build
@@ -29,4 +26,4 @@ RUN go build -o /build
 EXPOSE 8080
 
 # Run the executable
-CMD [ "/build" ]
+CMD ["/app/build"]
