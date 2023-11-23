@@ -1,15 +1,28 @@
 package database
 
 import (
-	entitiesauth "portofolio-api/auth/entities"
-	entitieshortlink "portofolio-api/shortlink/entities"
+	"log"
+	"os"
+	"shortlink-api/shortlink/entities"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func OpenConnection() *gorm.DB {
-	dialect := postgres.Open("host=localhost user=root password=secret dbname=portofolio_api port=5432 sslmode=disable TimeZone=Asia/Jakarta")
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	// Baca variabel lingkungan
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+
+	dialect := postgres.Open("host=" + dbHost + " user=" + dbUser + " password=" + dbPassword + " dbname=" + dbName + " port=" + dbPort + " sslmode=disable TimeZone=Asia/Jakarta")
 	db, err := gorm.Open(dialect, &gorm.Config{})
 	if err != nil {
 		panic("failed Connecting database")
@@ -19,6 +32,5 @@ func OpenConnection() *gorm.DB {
 
 func AutoMigration() {
 	db := OpenConnection()
-	db.AutoMigrate((&entitieshortlink.Shortlink_tab{}))
-	db.AutoMigrate((&entitiesauth.User_tab{}))
+	db.AutoMigrate(&entities.Shortlink_tab{})
 }

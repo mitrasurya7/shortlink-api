@@ -1,18 +1,27 @@
 package main
 
 import (
-	"portofolio-api/auth"
-	"portofolio-api/database"
-	"portofolio-api/shortlink"
+	"fmt"
+	"log"
+	"os"
+	"shortlink-api/database"
+	"shortlink-api/shortlink"
+
+	"github.com/joho/godotenv"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	port := os.Getenv("APP_PORT")
+	fmt.Println("Server running on port", port)
 	database.AutoMigration()
 	r := gin.Default()
 	shortlink.ControllerShortLink(r)
-	auth.Auth(r)
 
-	r.Run() // listen and serve on 0.0.0.0:8080
+	r.Run(":" + port)
 }
