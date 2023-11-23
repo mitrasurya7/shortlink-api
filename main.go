@@ -13,11 +13,12 @@ import (
 )
 
 func main() {
+
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
-
 	port := os.Getenv("APP_PORT")
+
 	fmt.Println("Server running on port", port)
 	database.AutoMigration()
 	r := gin.Default()
