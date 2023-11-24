@@ -24,6 +24,8 @@ services:
       DB_NAME: ${DB_NAME}
       APP_PORT: ${APP_PORT}
       FRONTEND_URL: ${FRONTEND_URL}
+      ORIGIN_URL: ${ORIGIN_URL}
+      
     depends_on:
       - postgres  # Menggunakan hanya layanan tanpa indeks
     links:
